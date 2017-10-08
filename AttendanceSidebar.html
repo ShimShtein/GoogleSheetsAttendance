@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <script>
+      function preventFormSubmit() {
+        var forms = document.querySelectorAll('form');
+        for (var i = 0; i < forms.length; i++) {
+          forms[i].addEventListener('submit', function(event) {
+            event.preventDefault();
+          });
+        }
+      }
+      window.addEventListener('load', preventFormSubmit);
+
+      function handleFormSubmit(formObject){
+        payload = { date: formObject.getElementsByClassName("attendanceDate")[0].value, attendants: {} };
+        
+        formObject.querySelectorAll(".attendant:checked").forEach(function(attendant) {
+          payload["attendants"][attendant.name] = Object.assign({}, attendant.dataset);
+        });
+        
+        google.script.run.withSuccessHandler(onServerSuccess).processAttendance(payload);
+      }
+      
+      function onServerSuccess() {
+        google.script.host.close();
+      }
+    </script>
+  </head>
+  <body>
+    <form id="attendanceForm" onsubmit="handleFormSubmit(this)">
+      <div>
+        Attendance date:
+       </div>
+      <input class="attendanceDate" type="date" name="attendanceDate" value="<?= formatHtmlDate(new Date()); ?>" />
+      <div>
+        Participants:
+      </div>
+      <? 
+      keys = Object.keys(namesIndex);
+      keys.sort();
+      for (var i = 0; i < keys.length; i++) { 
+        key = keys[i]; ?>
+        <div>
+        <input class="attendant" type="checkbox" name="<?= key; ?>" data-sheet="<?= namesIndex[key].sheet.getName() ?>" data-name-col="<?= namesIndex[key].name_col ?>" /><?= key; ?>
+        </div>
+      <? } ?>
+        <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>
+
+
