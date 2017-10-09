@@ -76,7 +76,7 @@ function updatePerson(date, index, person) {
 function lastRow(column, values) {
   Logger.log("Counting lastRow for column: " + column);
   var i=0;
-  for (i=values.length-1; i>2; i--) {
+  for (i=values.length-1; i>1; i--) {
     if (values[i][column] != undefined && values[i][column] != "") { i++; break; }
   }
   
