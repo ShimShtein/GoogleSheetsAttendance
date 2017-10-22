@@ -1,20 +1,16 @@
 function debugAttendance() {
-  response =  {
-    date: "2017-10-08", 
-    attendants:{
-      "אלונה לוין":{
-        nameCol:6, 
-        sheet:"a-b"}, 
-      "רוזה לנקין":{
-        nameCol:1, 
-        sheet:"c-d"}, 
-      "קטי":{
-        nameCol:5, 
-        sheet:"c-d"}, 
-      "רעיה זוזקין":{
-        nameCol:3, 
-        sheet:"c-d"}}};
-  processAttendance(response);
+  var updateReport = { date: new Date("2019-10-25"), attendants: {
+    "אנה גוסר": { row: 9, dateColumn: 9, sheetName: "a-b" }
+} };
+  var ss = SpreadsheetApp.getActive();
+  var sheets = ss.getSheets();
+  
+  var sheetsIndex = getSheetsForUpdate(sheets);
+  drawReport(updateReport, sheetsIndex);
+}
+
+function debugFocus() {
+  focusCell("a-b", 10, 10);
 }
 
 function processAttendance(response){
@@ -24,8 +20,9 @@ function processAttendance(response){
   var sheets = ss.getSheets();
   
   var sheetsIndex = getSheetsForUpdate(sheets);
-  updateIndex(response, sheetsIndex);
+  var updateReport = updateIndex(response, sheetsIndex);
   commitIndex(sheetsIndex);
+  drawReport(updateReport, sheetsIndex);
 }
 
 function getSheetsForUpdate(sheets) {
@@ -45,11 +42,13 @@ function getSheetsForUpdate(sheets) {
 
 function updateIndex(response, index) {
   var date = new Date(response.date);
+  var updateReport = { date: date, attendants: {} }
   
   for (var person in response.attendants) {
     Logger.log("Updating person: " + person);
-    updatePerson(date, index, response.attendants[person]);
+    updateReport.attendants[person] = updatePerson(date, index, response.attendants[person]);
   };
+  return updateReport;
 }
 
 function commitIndex(index) {
@@ -71,6 +70,7 @@ function updatePerson(date, index, person) {
   values[row][column] = formatOutputDate(date);
   entry.dirty = true;
   Logger.log("Updated row: " + row + " column: " + column + " with: " + values[row][column]);
+  return { row: row, dateColumn: column, sheetName: sheetName };
 }
 
 function lastRow(column, values) {
@@ -86,4 +86,35 @@ function lastRow(column, values) {
 
 function formatOutputDate(date) {
   return "" + date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear();
+}
+
+function drawReport(updateReport, sheetIndex) {
+  var updateReportView = createReportViewData(updateReport, sheetIndex);
+  
+  var t = HtmlService.createTemplateFromFile('AttendanceReport');
+  t.updateReportView = updateReportView;
+  html = t.evaluate()
+          .setTitle('Attendance report');
+  SpreadsheetApp.getUi()
+      .showSidebar(html);
+
+}
+
+function createReportViewData(updateReport, sheetIndex){
+  var reportView = { date: updateReport.date, attendants: {} }
+  for (var person in updateReport.attendants) {
+    Logger.log("Preparing to view person: " + person);
+    var personReport = updateReport.attendants[person]
+    var punchCol = personReport.dateColumn - 1;
+    var punch = sheetIndex[personReport.sheetName].values[personReport.row][punchCol];
+    reportView.attendants[person] = { sheet: personReport.sheetName, punchCol: punchCol, punchRow: personReport.row, punch: punch } ;
+  };
+  
+  return reportView;
+}
+
+function focusCell(sheet, row, column) {
+  var ss = SpreadsheetApp.getActive();
+  sheet = ss.getSheetByName(sheet);
+  sheet.setActiveRange(sheet.getRange(new Number(row) + 1, new Number(column) + 1));
 }
