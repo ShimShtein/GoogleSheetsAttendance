@@ -26,10 +26,12 @@ function indexSheets(sheets) {
     }
     
     names_row = range[1];
-    for(var i=0; i<(names_row.length+1-col_offset) / 2; i++) {
-      var name = names_row[i*2+col_offset];
-      if (name === undefined) { continue; }
-      names[name] = { name: name, sheet: sheet, name_col: i*2+col_offset }
+    if (names_row != undefined) {
+      for(var i=0; i<(names_row.length+1-col_offset) / 2; i++) {
+        var name = names_row[i*2+col_offset];
+        if (name === undefined) { continue; }
+        names[name] = { name: name, sheet: sheet, name_col: i*2+col_offset }
+      }
     }
   });
   return names;

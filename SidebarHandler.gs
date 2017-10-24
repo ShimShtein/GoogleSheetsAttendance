@@ -31,11 +31,13 @@ function getSheetsForUpdate(sheets) {
     var lastRow = sheet.getLastRow();
     var lastCol = sheet.getLastColumn();
     
-    var range = sheet.getRange(1, 1, lastRow + 1, lastCol);
-    var name = sheet.getName();
-    var values = range.getValues();
-    
-    index[name] = { sheet: sheet, range: range, values: values, dirty: false }
+    if (lastRow != 0 && lastCol != 0) {
+      var name = sheet.getName();
+      var range = sheet.getRange(1, 1, lastRow + 1, lastCol);
+      var values = range.getValues();
+      
+      index[name] = { sheet: sheet, range: range, values: values, dirty: false }
+    }
   });
   return index;
 }
