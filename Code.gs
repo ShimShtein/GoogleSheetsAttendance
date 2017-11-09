@@ -9,7 +9,9 @@
 
 function initForm() {
   var ss = SpreadsheetApp.getActive();
-  var sheets = ss.getSheets();
+  var sheets = ss.getSheets().filter(function(sheet) {
+    return sheet.getTabColor() !== null;
+  });
   
   var namesIndex = indexSheets(sheets);
   setupSidebar(namesIndex);
