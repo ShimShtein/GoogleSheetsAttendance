@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
   <head>
     <base target="_top">
     <script>
@@ -31,11 +31,11 @@
   <body>
     <form id="attendanceForm" onsubmit="handleFormSubmit(this)">
       <div>
-        Attendance date:
+        <h3>תאריך האימון:</h3>
        </div>
       <input class="attendanceDate" type="date" name="attendanceDate" value="<?= formatHtmlDate(new Date()); ?>" />
       <div>
-        Participants:
+        <h3>משתתפים:</h3>
       </div>
       <? 
       keys = Object.keys(namesIndex);

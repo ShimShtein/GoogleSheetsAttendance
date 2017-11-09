@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
   <head>
     <base target="_top">
     <script>
@@ -23,10 +23,10 @@
   </head>
   <body>
       <div>
-        Attendance date:&nbsp;<?= formatHtmlDate(updateReportView.date); ?>
+        <h3>תאריך:</h3>&nbsp;<?= formatHtmlDate(updateReportView.date); ?>
       </div>
       <div>
-        Participants:
+        <h3>משתתפים:</h3>
         <ul>
       <? 
       keys = Object.keys(updateReportView.attendants);
