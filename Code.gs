@@ -59,5 +59,5 @@ function setupSidebar(names) {
 }
 
 function formatHtmlDate(date){
-  return "" + date.getFullYear() + "-" + (date.getMonth()+1) + "-" +  Utilities.formatString('%02d', date.getDate());
+  return Utilities.formatDate(date, "Asia/Jerusalem", "yyyy-MM-dd");
 }

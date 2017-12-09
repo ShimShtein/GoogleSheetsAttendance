@@ -47,7 +47,7 @@ function updateIndex(response, index) {
   var updateReport = { date: date, attendants: {} }
   
   for (var person in response.attendants) {
-    Logger.log("Updating person: " + person);
+    Logger.log("Updating person: " + person + " date: " + date);
     updateReport.attendants[person] = updatePerson(date, index, response.attendants[person]);
   };
   return updateReport;
@@ -87,7 +87,7 @@ function lastRow(column, values) {
 }
 
 function formatOutputDate(date) {
-  return "" + date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear();
+  return Utilities.formatDate(date, "Asia/Jerusalem", "dd.MM.yyyy")
 }
 
 function drawReport(updateReport, sheetIndex) {
